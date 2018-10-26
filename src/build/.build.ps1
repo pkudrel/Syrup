@@ -7,7 +7,8 @@
 param(
 $appName = "Robe",
 	$serverDir = "C:\work\users\AntyPiracy\",
-	$toolsDir = (Join-Path $BL.ScriptsPath  "tools"),
+	$toolsDir = ($BL.ToolsPath),
+	$BHDir = ($BL.BHPath),
 	$scriptsPath = $BL.ScriptsPath,
 	$nuget = (Join-Path $toolsDir  "nuget/nuget.exe"),
 	$libz = (Join-Path $toolsDir  "LibZ.Tool/tools/libz.exe"),
@@ -56,10 +57,10 @@ $appName = "Robe",
 Set-Alias MSBuild (Resolve-MSBuild)
 
 # inser tools
-. (Join-Path $BL.ScriptsPath  "vendor\ps-auto-helpers\ps\misc.ps1")
-. (Join-Path $BL.ScriptsPath  "vendor\ps-auto-helpers\ps\io.ps1")
-. (Join-Path $BL.ScriptsPath  "vendor\ps-auto-helpers\ps\syrup.ps1")
-. (Join-Path $BL.ScriptsPath  "vendor\ps-auto-helpers\ps\assembly-tools.ps1")
+. (Join-Path $BHDir "ps\misc.ps1")
+. (Join-Path $BHDir "ps\io.ps1")
+. (Join-Path $BHDir "ps\syrup.ps1")
+. (Join-Path $BHDir "ps\assembly-tools.ps1")
 
 
 # Synopsis: Update-TeamCity
