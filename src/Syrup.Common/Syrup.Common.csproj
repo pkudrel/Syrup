@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8EE8A6E9-7194-4C3B-ADC3-E3728C3850EB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Syrup.Common</RootNamespace>
+    <AssemblyName>Syrup.Common</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="MediatR, Version=5.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediatR.5.0.1\lib\net45\MediatR.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.5.7\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App\Models\DeveleperConfig.cs" />
+    <Compile Include="App\Models\SyrupConfig.cs" />
+    <Compile Include="App\ReqRes\AppStartedEvent.cs" />
+    <Compile Include="App\ReqRes\AppStartingEvent.cs" />
+    <Compile Include="Bootstrap\AppEnvironment.cs" />
+    <Compile Include="Bootstrap\AppEnvironmentBuilder.cs" />
+    <Compile Include="Bootstrap\AppStartedEvent.cs" />
+    <Compile Include="Bootstrap\AppStartingEvent.cs" />
+    <Compile Include="Bootstrap\AppVersion.cs" />
+    <Compile Include="Bootstrap\AppVersionBuilder.cs" />
+    <Compile Include="Bootstrap\AssemblyCollector.cs" />
+    <Compile Include="Bootstrap\Attempt.cs" />
+    <Compile Include="Bootstrap\Boot.cs" />
+    <Compile Include="Bootstrap\DeveloperConfig.cs" />
+    <Compile Include="Bootstrap\DeveloperMode.cs" />
+    <Compile Include="Bootstrap\Helpers.cs" />
+    <Compile Include="Bootstrap\MediatorModule.cs" />
+    <Compile Include="Bootstrap\Predicate.cs" />
+    <Compile Include="Bootstrap\RegistryBase.cs" />
+    <Compile Include="Bootstrap\SingleGlobalInstance.cs" />
+    <Compile Include="Bootstrap\SingleInstanceHelper.cs" />
+    <Compile Include="Bootstrap\Stopwatch.cs" />
+    <Compile Include="Consts.cs" />
+    <Compile Include="Executor\ExecutorRequest.cs" />
+    <Compile Include="Executor\ExecutorResponse.cs" />
+    <Compile Include="Extensions\AutofacExtensions.cs" />
+    <Compile Include="Extensions\CloneExtensions.cs" />
+    <Compile Include="Extensions\ContainerBuilderExtensions.cs" />
+    <Compile Include="Extensions\System.AppDomain.cs" />
+    <Compile Include="Extensions\System.Array.cs" />
+    <Compile Include="Extensions\System.Collections.Generic.IDictionary.cs" />
+    <Compile Include="Extensions\System.ComponentModel.cs" />
+    <Compile Include="Extensions\System.cs" />
+    <Compile Include="Extensions\System.DateTime.cs" />
+    <Compile Include="Extensions\System.Int.cs" />
+    <Compile Include="Extensions\System.Linq.Enumerable.cs" />
+    <Compile Include="Extensions\System.Linq.Expressions.cs" />
+    <Compile Include="Extensions\System.Long.cs" />
+    <Compile Include="Extensions\System.Object.cs" />
+    <Compile Include="Extensions\System.String.cs" />
+    <Compile Include="Extensions\System.Type.cs" />
+    <Compile Include="Extensions\System.Uri.cs" />
+    <Compile Include="Hash\Other.cs" />
+    <Compile Include="Io\Async.cs" />
+    <Compile Include="Io\Misc.cs" />
+    <Compile Include="Mediator\AsyncMediatorPipeline.cs" />
+    <Compile Include="Mediator\IAsyncPostRequestHandler.cs" />
+    <Compile Include="Mediator\IAsyncPreRequestHandler.cs" />
+    <Compile Include="Mediator\IPostRequestHandler.cs" />
+    <Compile Include="Mediator\IPreRequestHandler.cs" />
+    <Compile Include="Mediator\MediatorPipeline.cs" />
+    <Compile Include="Messaging\IEvent.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Version\AppVersion.cs" />
+    <Compile Include="Version\AppVersionGenerator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App\Config\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
