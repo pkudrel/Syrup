@@ -10,7 +10,7 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-- script: git checkout --progress --force $(Build.SourceBranch)
+- script: git checkout --progress --force $(Build.SourceBranchName)
   displayName: 'Set valid branch name'
 
 - script: |
