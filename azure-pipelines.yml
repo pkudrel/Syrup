@@ -27,7 +27,7 @@ steps:
   inputs:
     testResultsFormat: 'xUnit' # Options: JUnit, NUnit, VSTest, xUnit
     testResultsFiles: '**/*.Tests.html' 
-    searchFolder: './build/tmp/build/Syrup.Tests/$(System.DefaultWorkingDirectory)' # Optional
+    searchFolder: './build/tmp/build/Syrup.Tests/' # Optional
     #mergeTestResults: false # Optional
     #testRunTitle: # Optional
     #buildPlatform: # Optional
