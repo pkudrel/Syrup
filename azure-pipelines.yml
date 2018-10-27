@@ -56,3 +56,13 @@ steps:
     #overWrite: false # Optional
     #flattenFolders: false # Optional
 
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(Build.SourcesDirectory)/_artifacts/zip' # Optional
+    contents: '**' 
+    targetFolder: '$(Build.BinariesDirectory)'
+    #cleanTargetFolder: false # Optional
+    #overWrite: false # Optional
+    #flattenFolders: false # Optional
+
+
