@@ -32,7 +32,7 @@ steps:
   inputs:
     testResultsFormat: 'xUnit' # Options: JUnit, NUnit, VSTest, xUnit
     testResultsFiles: '**/Syrup.Tests.xml' 
-    searchFolder: './build/tmp/build/Syrup.Tests' # Optional
+    #searchFolder: './build/tmp/build/Syrup.Tests' # Optional
     #mergeTestResults: false # Optional
     #testRunTitle: # Optional
     #buildPlatform: # Optional
