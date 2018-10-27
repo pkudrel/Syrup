@@ -14,6 +14,7 @@ steps:
     git fetch origin '+refs/heads/*:refs/heads/*'
     git checkout $(Build.SourceBranchName)
     git reset --hard $(Build.SourceBranchName)
+    git pull
     git branch
     
   displayName: 'Set valid branch name'
