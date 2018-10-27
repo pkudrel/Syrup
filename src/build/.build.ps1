@@ -55,8 +55,9 @@ param(
 			exe = "";
 			dir = "Syrup.Tests";
 			dstExe = "";
-			testFile = "Syrup.Tests.dll"
-			testHtml = "Syrup.Tests.html"
+			testFile = "Syrup.Tests.dll";
+			testHtml = "Syrup.Tests.html";
+			testXml = "Syrup.Tests.xml";
 	},
 	$projects = @($projectSyrupSelf,$projectSyrup, $projectScriptExecutor , $projectTests )
     )
@@ -341,6 +342,7 @@ function TestdFn ($currentProjects){
 				Write-Build Green "*** Test $($p.Name) *** "
 				$out = (Join-Path $outMain  $p.dir )
 				$testResultHtml = (Join-Path $out  $p.testHtml )
+			    $testResultXml = (Join-Path $out  $p.testXml )
 				$testFile = (Join-Path $out   $p.testFile )
 				Write-Host $out 
 				Write-Host $testFile
@@ -350,7 +352,7 @@ function TestdFn ($currentProjects){
 				try {
 			
 					exec {
-						& $xunit $testFile -html $testResultHtml 
+						& $xunit $testFile -html $testResultHtml -xml $testResultXml 
 					}
 				}
 

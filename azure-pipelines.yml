@@ -25,13 +25,13 @@ steps:
 
 
 
-- script: echo $(System.DefaultWorkingDirectory)
+- script: echo '$(System.DefaultWorkingDirectory)'
   displayName: 'Run a one-line script'
     
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'xUnit' # Options: JUnit, NUnit, VSTest, xUnit
-    testResultsFiles: '**/*.Tests.html' 
+    testResultsFiles: '**/Syrup.Tests.xml' 
     searchFolder: './build/tmp/build/Syrup.Tests' # Optional
     #mergeTestResults: false # Optional
     #testRunTitle: # Optional
