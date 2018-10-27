@@ -84,7 +84,7 @@ task Update-BuildServer -If (($env:AGENT_NAME).Length -ne 0) {
 		Write-Host "Build server version: $tvc" 
 		Write-Host "Script version: $s" 
 			
-		Write-Host "##vso[release.updatereleasename]$s"
+		Write-Host "##vso[build.updatebuildnumber]$s"
 		#Write-Host "##vso[build.updatebuildnumber]my-new-build-number"
 }
 
