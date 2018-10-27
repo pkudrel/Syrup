@@ -74,6 +74,8 @@ Set-Alias MSBuild (Resolve-MSBuild)
 . (Join-Path $BHDir "ps\syrup.ps1")
 . (Join-Path $BHDir "ps\assembly-tools.ps1")
 
+$a1 = $env:AGENT_ID
+Write-Host "Id: $a1"
 
 # Synopsis: Update-TeamCity
 task Update-TeamCity -If (($env:TEAMCITY_VERSION).Length -ne 0) {
@@ -137,8 +139,6 @@ task Pack-Nuget  {
 	$syrupDir = Join-Path $nugetDir "/_syrup"
 	$syruScriptspDir = Join-Path $syrupDir "scripts"
 
-	
-
 	EnsureDirExistsAndIsEmpty $nugetDir
 	EnsureDirExistsAndIsEmpty $mainDir
 	EnsureDirExistsAndIsEmpty $syrupDir
@@ -148,11 +148,6 @@ task Pack-Nuget  {
 	$dst = $mainDir
 	"Copy main; Src: $src ; Dst: $dst"
 	Copy-Item  $src  -Recurse  -Destination $dst
-
-
-	
-
-
 
 	$src = "$scriptsPath/syrup/scripts/*"
 	$dst = $syruScriptspDir
