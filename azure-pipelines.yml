@@ -33,6 +33,7 @@ steps:
     echo '$(Build.ArtifactStagingDirectory)'
     echo '$(Agent.BuildDirectory)'
     echo '$(Build.SourcesDirectory)'
+    echo '$(Build.BinariesDirectory)'
   displayName: 'Run a one-line script'
 
 - task: PublishTestResults@2
