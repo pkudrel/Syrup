@@ -47,3 +47,12 @@ steps:
     #buildConfiguration: # Optional
     #publishRunAttachments: true # Optional
 
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(Build.SourcesDirectory)/_artifacts' # Optional
+    contents: '**\zip\**' 
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+    #cleanTargetFolder: false # Optional
+    #overWrite: false # Optional
+    #flattenFolders: false # Optional
+
