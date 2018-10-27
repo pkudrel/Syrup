@@ -59,7 +59,7 @@ param(
 			testHtml = "Syrup.Tests.html";
 			testXml = "Syrup.Tests.xml";
 	},
-	$projects = @($projectSyrupSelf,$projectSyrup, $projectScriptExecutor , $projectTests )
+	$projects = @($projectSyrupSelf, $projectSyrup, $projectScriptExecutor, $projectTests )
     )
 
 

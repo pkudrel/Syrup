@@ -25,7 +25,9 @@ steps:
 
 
 
-- script: echo '$(System.DefaultWorkingDirectory)'
+- script: | 
+    echo '$(System.DefaultWorkingDirectory)'
+    echo '$(Build.ArtifactStagingDirectory)'
   displayName: 'Run a one-line script'
 
 - task: PublishTestResults@2
