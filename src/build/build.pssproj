@@ -45,6 +45,10 @@
     <Compile Include="tools\ib\README.htm" />
     <Compile Include="tools\ib\Release-Notes.htm" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="syrup\scripts\after-make-current.csx" />
+    <Content Include="syrup\scripts\before-make-current.csx" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="Build" />
 </Project>
