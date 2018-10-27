@@ -17,7 +17,7 @@ steps:
   inputs:
     targetType: 'filePath'
     filePath: ./src/build/bl.ps1 
-    arguments: '-$buildCounter ''$(Build.BuildId)'''
+    arguments: '-$buildCounter $(Build.BuildId)'
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
