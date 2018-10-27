@@ -13,7 +13,9 @@ steps:
 - script: |
     git fetch origin '+refs/heads/*:refs/heads/*'
     git checkout $(Build.SourceBranchName)
+    git reset --hard $(Build.SourceBranchName)
     git branch
+    
   displayName: 'Set valid branch name'
 
 - task: PowerShell@2
