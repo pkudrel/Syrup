@@ -27,7 +27,7 @@ steps:
 
 - script: echo '$(System.DefaultWorkingDirectory)'
   displayName: 'Run a one-line script'
-    
+
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'xUnit' # Options: JUnit, NUnit, VSTest, xUnit
