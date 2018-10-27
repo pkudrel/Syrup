@@ -31,7 +31,7 @@ steps:
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'xUnit' # Options: JUnit, NUnit, VSTest, xUnit
-    testResultsFiles: '**/Syrup.Tests.xml' 
+    testResultsFiles: '**/Syrup.Tests.Result.*' 
     #searchFolder: './build/tmp/build/Syrup.Tests' # Optional
     #mergeTestResults: false # Optional
     #testRunTitle: # Optional

@@ -56,8 +56,8 @@ param(
 			dir = "Syrup.Tests";
 			dstExe = "";
 			testFile = "Syrup.Tests.dll";
-			testHtml = "Syrup.Tests.html";
-			testXml = "Syrup.Tests.xml";
+			testHtml = "Syrup.Tests.Result.html";
+			testXml = "Syrup.Tests.Result.xml";
 	},
 	$projects = @($projectSyrupSelf,$projectSyrup, $projectScriptExecutor , $projectTests )
     )
