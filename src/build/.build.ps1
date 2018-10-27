@@ -80,7 +80,7 @@ Set-Alias MSBuild (Resolve-MSBuild)
 # Synopsis: Update-TeamCity
 task Update-BuildServer -If (($env:AGENT_NAME).Length -ne 0) {
 		$tvc = $env:BUILD_BUILDNUMBER
-		$s = $buildVersion.SemVer
+		$s = $BL.BuildVersion.SemVer
 		Write-Host "Build server version: $tvc" 
 		Write-Host "Script version: $s" 
 			
