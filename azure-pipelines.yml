@@ -10,7 +10,7 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-- script: git checkout --progress --force $(Build.SourceBranchName)
+- script: git checkout --force $(Build.SourceBranchName)
   displayName: 'Set valid branch name'
 
 - task: PowerShell@2
@@ -19,8 +19,3 @@ steps:
     targetType: 'filePath'
     filePath: ./src/build/bl.ps1 
     arguments: '-buildCounter $(Build.BuildId)'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
