@@ -75,7 +75,10 @@ Set-Alias MSBuild (Resolve-MSBuild)
 . (Join-Path $BHDir "ps\assembly-tools.ps1")
 
 $a1 = $env:AGENT_ID
+$a2 = $env:AGENT_NAME
+
 Write-Host "Id: $a1"
+Write-Host "NAME: $a2"
 
 # Synopsis: Update-TeamCity
 task Update-TeamCity -If (($env:TEAMCITY_VERSION).Length -ne 0) {
