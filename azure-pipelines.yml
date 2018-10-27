@@ -14,8 +14,8 @@ steps:
   displayName: 'Set valid branch name'
 
 - task: PowerShell@2
+  displayName: 'Run main build script'
   inputs:
-    displayName: 'Run main build script'
     targetType: 'filePath'
     filePath: ./src/build/bl.ps1 
     arguments: '-buildCounter $(Build.BuildId)'
