@@ -13,8 +13,11 @@ steps:
 - script: git checkout --progress --force $(Build.SourceBranchName)
   displayName: 'Set valid branch name'
 
-- powershell: /src/build/bl.ps1
-  displayName: 'Run build'
+- task: PowerShell@2
+  inputs:
+    targetType: 'filePath'
+    filePath: ./src/build/bl.ps1 
+    #arguments: '-input1 ''$(parameters.param1)'''
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
