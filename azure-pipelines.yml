@@ -13,6 +13,9 @@ steps:
 - script: git checkout --progress --force $(Build.SourceBranchName)
   displayName: 'Set valid branch name'
 
+- powershell: /src/build/bl.ps1
+  displayName: 'Run build'
+
 - script: |
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
