@@ -77,15 +77,13 @@ Set-Alias MSBuild (Resolve-MSBuild)
 
 
 
-# Synopsis: Update-TeamCity
+# Synopsis: Update-BuildServer
 task Update-BuildServer -If (($env:AGENT_NAME).Length -ne 0) {
 		$tvc = $env:BUILD_BUILDNUMBER
 		$s = $BL.BuildVersion.SemVer
 		Write-Host "Build server version: $tvc" 
 		Write-Host "Script version: $s" 
-			
 		Write-Host "##vso[build.updatebuildnumber]$s"
-		#Write-Host "##vso[build.updatebuildnumber]my-new-build-number"
 }
 
 
