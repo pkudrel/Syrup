@@ -19,7 +19,7 @@ param(
 	$sln  = (Join-Path $BL.RepoRoot  "/src/Syrup.sln" ),
 	$buildTmpDir  = (Join-Path $BL.TmpPath "build" ),
 
-	$buildReadyDir  = (Join-Path $BL.BuildOutPath "ready" ),
+	$buildReadyDir  = (Join-Path $BL.TmpPath "ready" ),
 	$Dirs = (@{"marge" = "marge"; "build" = "build"; "nuget" = "nuget"; "main" = "main"; "syrup" = "syrup"}),
 	$buildWorkDir  = (Join-Path $buildTmpDir "build" ),
 	$target  = "Release",
