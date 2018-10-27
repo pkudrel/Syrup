@@ -9,6 +9,7 @@ param(
 	$serverDir = "C:\work\users\AntyPiracy\",
 	$toolsDir = ($BL.ToolsPath),
 	$BHDir = ($BL.BHPath),
+	$artifactsPath = ($BL.ArtifactsPath),
 	$scriptsPath = $BL.ScriptsPath,
 	$nuget = (Join-Path $toolsDir  "nuget/nuget.exe"),
 	$libz = (Join-Path $toolsDir  "LibZ.Tool/tools/libz.exe"),
@@ -74,28 +75,14 @@ Set-Alias MSBuild (Resolve-MSBuild)
 . (Join-Path $BHDir "ps\syrup.ps1")
 . (Join-Path $BHDir "ps\assembly-tools.ps1")
 
-$a1 = $env:AGENT_ID
-$a2 = $env:AGENT_NAME
-$a3 = $env:AGENT_TOOLSDIRECTORY
 
-Write-Host "Id: $a1"
-Write-Host "NAME: $a2"
-Write-Host "NAME: $a3"
 
 # Synopsis: Update-TeamCity
-task Update-TeamCity -If (($env:AGENT_NAME).Length -ne 0) {
-		$tvc = $env:TEAMCITY_VERSION
-		Write-Host "Setup TeamCity: $tvc" 
+task Update-BuildServer -If (($env:AGENT_NAME).Length -ne 0) {
+		$tvc = $env:BUILD_BUILDNUMBER
+		Write-Host "Build server version: $tvc" 
 		$s = $buildVersion.SemVer
-		Write-Host  "##teamcity[buildNumber '$s']"
-		try {
-			$max = $host.UI.RawUI.MaxPhysicalWindowSize
-			if($max) {
-			$host.UI.RawUI.BufferSize = New-Object System.Management.Automation.Host.Size(9999,9999)
-			$host.UI.RawUI.WindowSize = New-Object System.Management.Automation.Host.Size($max.Width,$max.Height)
-		}
-		} catch {}
-	
+		Write-Host "##vso[build.updatebuildnumber]$s"
 }
 
 
@@ -375,6 +362,7 @@ function CopyIfExistsFn($src, $dst){
 }
 
 
+
 task Build-SyrupSelf {
 	$currentProjects  = @( $projectSyrupSelf  )
 	BuildFn $currentProjects
@@ -439,15 +427,34 @@ task Run-Tests {
 }
 
 
+task Copy-Artifacts {
 
+	$buildDir = [System.IO.Path]::Combine( $buildTmpDir , $Dirs.build )
+	EnsureDirExistsAndIsEmpty $artifactsPath
+	
+	$dst = "$artifactsPath/syrup/"
+	EnsureDirExists $dst
+	Copy-Item  "$buildReadyDir/nuget/*" -Destination $dst -Force
+
+	
+	$dst = "$artifactsPath/zip/"
+	EnsureDirExists $dst
+	Copy-Item  "$buildReadyDir/syrup/*.zip" -Destination $dst -Force
+
+	$dst = "$artifactsPath/docs/"
+	EnsureDirExists $dst
+	Copy-Item  "$buildDir/Syrup.Tests/Syrup.Tests.html" -Destination $dst -Force
+	Copy-Item  "$buildDir/Syrup.Tests/Syrup.Tests.xml" -Destination $dst -Force
+
+}
 
 
 # Synopsis: All the things
-task Init Update-TeamCity, Clean, Get-Tools, RestorePackages
+task Init Update-BuildServer, Clean, Get-Tools, RestorePackages
 task Syrup-Self Build-SyrupSelf, Marge-SyrupSyrup 
 task Syrup-ScriptExecutor  Build-ScriptExecutor, Marge-ScriptExecutor
 task Components Syrup-Self, Syrup-ScriptExecutor, Components-Copy
 task Syrup-Main Build-Main, Marge-Main
 task Syrup-Tests Build-Tests, Run-Tests 
-task Prepare-Release   Pack-Nuget, Make-Zip, Generate-SyrupFile, Copy-Update-TeamCity, Copy-ToSyrupDir
+task Prepare-Release   Pack-Nuget, Make-Zip, Generate-SyrupFile, Copy-Update-TeamCity, Copy-ToSyrupDir, Copy-Artifacts
 task . Init, Components, Syrup-Main, Syrup-Tests, Prepare-Release
