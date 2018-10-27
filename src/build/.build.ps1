@@ -13,6 +13,7 @@ param(
 	$nuget = (Join-Path $toolsDir  "nuget/nuget.exe"),
 	$libz = (Join-Path $toolsDir  "LibZ.Tool/tools/libz.exe"),
 	$7zip = (Join-Path $toolsDir  "7-Zip.CommandLine/tools/7za.exe"),
+	$xunit = (Join-Path $toolsDir  "xunit.runner.console/tools/net462/xunit.console.exe"),
 
 	$srcDir = (Join-Path $BL.RepoRoot "src"),
 	$sln  = (Join-Path $BL.RepoRoot  "/src/Syrup.sln" ),
@@ -47,7 +48,17 @@ param(
 			dir = "Syrup.ScriptExecutor";
 			dstExe = "Syrup.ScriptExecutor.exe";
 	},
-	$projects = @($projectSyrupSelf,$projectSyrup, $projectScriptExecutor  )
+	$projectTests = @{
+			name = "SyrupTests";
+			marge = $false;
+			file = (Join-Path $BL.RepoRoot  "/src/Syrup.Tests/Syrup.Tests.csproj" );
+			exe = "";
+			dir = "Syrup.Tests";
+			dstExe = "";
+			testFile = "Syrup.Tests.dll"
+			testHtml = "Syrup.Tests.html"
+	},
+	$projects = @($projectSyrupSelf,$projectSyrup, $projectScriptExecutor , $projectTests )
     )
 
 
@@ -87,6 +98,7 @@ task Get-Tools {
 	DownloadIfNotExists "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" $nuget 
 	DownloadNugetIfNotExists $nuget "LibZ.Tool" $toolsDir $libz
 	DownloadNugetIfNotExists $nuget "7-Zip.CommandLine" $toolsDir $7zip
+	DownloadNugetIfNotExists $nuget "xunit.runner.console" $toolsDir $xunit
 }
 
 # Synopsis: Package-Restore
@@ -319,6 +331,36 @@ function MargFn ($currentProjects){
 
 }
 
+function TestdFn ($currentProjects){
+
+
+	$outMain = (Join-Path $buildTmpDir $Dirs.build  )
+	
+	foreach ($p in $currentProjects ) {
+
+				Write-Build Green "*** Test $($p.Name) *** "
+				$out = (Join-Path $outMain  $p.dir )
+				$testResultHtml = (Join-Path $out  $p.testHtml )
+				$testFile = (Join-Path $out   $p.testFile )
+				Write-Host $out 
+				Write-Host $testFile
+				Write-Host $testResultHtml 
+
+			
+				try {
+			
+					exec {
+						& $xunit $testFile -html $testResultHtml 
+					}
+				}
+
+				catch {
+					#throw $_.Exception
+					#exit 1
+				}
+		}
+}
+
 function CopyIfExistsFn($src, $dst){
 
 	if([System.IO.File]::Exists($src)){
@@ -375,10 +417,27 @@ task Build-Main {
 	BuildFn $currentProjects
 }
 
+
+
 task  Marge-Main  {
 	$currentProjects  = @( $projectSyrup   )
 	MargFn $currentProjects
 }
+
+
+task Build-Tests {
+	$currentProjects  = @(  $projectTests  )
+	BuildFn $currentProjects
+}
+
+
+task Run-Tests {
+	$currentProjects  = @(  $projectTests  )
+	TestdFn $currentProjects
+}
+
+
+
 
 
 # Synopsis: All the things
@@ -387,5 +446,6 @@ task Syrup-Self Build-SyrupSelf, Marge-SyrupSyrup
 task Syrup-ScriptExecutor  Build-ScriptExecutor, Marge-ScriptExecutor
 task Components Syrup-Self, Syrup-ScriptExecutor, Components-Copy
 task Syrup-Main Build-Main, Marge-Main
+task Syrup-Tests Build-Tests, Run-Tests 
 task Prepare-Release   Pack-Nuget, Make-Zip, Generate-SyrupFile, Copy-Update-TeamCity, Copy-ToSyrupDir
-task . Init, Components, Syrup-Main, Prepare-Release
+task . Init, Components, Syrup-Main, Syrup-Tests, Prepare-Release

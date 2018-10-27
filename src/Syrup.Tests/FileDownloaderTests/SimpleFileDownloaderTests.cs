@@ -9,26 +9,26 @@ using Xunit;
 
 namespace Syrup.Tests.FileDownloaderTests
 {
-    public class SimpleFileDownloaderTests
-    {
-        private FileDownloader _fd;
-        private const string url = "https://clients.deneblab.com/syrup-api-main/index";
-        public SimpleFileDownloaderTests()
-        {
-            _fd = new FileDownloader();
-        }
+    //public class SimpleFileDownloaderTests
+    //{
+    //    private FileDownloader _fd;
+    //    private const string url = "https://clients.deneblab.com/syrup-api-main/index";
+    //    public SimpleFileDownloaderTests()
+    //    {
+    //      //  _fd = new FileDownloader();
+    //    }
 
-        [Fact]
-        public async Task SimpleTest()
-        {
-            var json = await DownloadString(url);
-            var l = JsonSerializer<List<ReleaseInfo>>.DeSerialize(json);
-            var max = l.OrderByDescending(x => SemVersion.Parse(x.SemVer));
-        }
+    //    [Fact(Skip = "")]
+    //    public async Task SimpleTest()
+    //    {
+    //        var json = await DownloadString(url);
+    //        var l = JsonSerializer<List<ReleaseInfo>>.DeSerialize(json);
+    //        var max = l.OrderByDescending(x => SemVersion.Parse(x.SemVer));
+    //    }
 
-        Task<string> DownloadString(string url)
-        {
-            return _fd.DownloadTextAsync(url);
-        }
-    }
+    //    Task<string> DownloadString(string url)
+    //    {
+    //        return _fd.DownloadTextAsync(url);
+    //    }
+    //}
 }
