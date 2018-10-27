@@ -76,12 +76,14 @@ Set-Alias MSBuild (Resolve-MSBuild)
 
 $a1 = $env:AGENT_ID
 $a2 = $env:AGENT_NAME
+$a3 = $env:AGENT_TOOLSDIRECTORY
 
 Write-Host "Id: $a1"
 Write-Host "NAME: $a2"
+Write-Host "NAME: $a3"
 
 # Synopsis: Update-TeamCity
-task Update-TeamCity -If (($env:TEAMCITY_VERSION).Length -ne 0) {
+task Update-TeamCity -If (($env:AGENT_NAME).Length -ne 0) {
 		$tvc = $env:TEAMCITY_VERSION
 		Write-Host "Setup TeamCity: $tvc" 
 		$s = $buildVersion.SemVer
