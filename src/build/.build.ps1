@@ -5,7 +5,7 @@
 
 [cmdletBinding()]
 param(
-$appName = "Robe",
+	$appName = "Syrup",
 	$serverDir = "C:\work\users\AntyPiracy\",
 	$toolsDir = ($BL.ToolsPath),
 	$BHDir = ($BL.BHPath),

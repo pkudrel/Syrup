@@ -11,7 +11,7 @@ param(
 	$minor = 0,
 	$patch = 0,
 	$buildCounter = 0,
-	$psGitVersionStrategy = "standard"
+	$psGitVersionStrategy = "combinateMajorAndBuildSlice3"
 )
 
 
