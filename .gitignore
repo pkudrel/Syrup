@@ -37,6 +37,9 @@ rcf/
 !/tools/Invoke-Build*
 /stuff/*
 
+# Embed
+src/Syrup/Embed/syrup-executor.bin
+src/Syrup/Embed/syrup-self.bin
 
 # others
 stuff/*
