@@ -65,9 +65,6 @@ steps:
     #overWrite: false # Optional
     #flattenFolders: false # Optional
 
-- task: PublishPipelineArtifact@0
-  inputs:
-    #artifactName: 'drop'
-    targetPath: 
+
 
 
