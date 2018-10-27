@@ -23,11 +23,16 @@ steps:
     filePath: ./src/build/bl.ps1 
     arguments: '-buildCounter $(Build.BuildId)'
 
+
+
+- script: echo $(System.DefaultWorkingDirectory)
+  displayName: 'Run a one-line script'
+    
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'xUnit' # Options: JUnit, NUnit, VSTest, xUnit
     testResultsFiles: '**/*.Tests.html' 
-    searchFolder: './build/tmp/build/Syrup.Tests/' # Optional
+    searchFolder: './build/tmp/build/Syrup.Tests' # Optional
     #mergeTestResults: false # Optional
     #testRunTitle: # Optional
     #buildPlatform: # Optional
