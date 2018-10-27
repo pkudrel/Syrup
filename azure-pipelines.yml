@@ -19,3 +19,14 @@ steps:
     targetType: 'filePath'
     filePath: ./src/build/bl.ps1 
     arguments: '-buildCounter $(Build.BuildId)'
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'xUnit' # Options: JUnit, NUnit, VSTest, xUnit
+    testResultsFiles: '**/*.Tests.html' 
+    searchFolder: '$(System.DefaultWorkingDirectory)' # Optional
+    #mergeTestResults: false # Optional
+    #testRunTitle: # Optional
+    #buildPlatform: # Optional
+    #buildConfiguration: # Optional
+    #publishRunAttachments: true # Optional
