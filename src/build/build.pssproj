@@ -30,20 +30,12 @@
     <Folder Include="syrup\" />
     <Folder Include="nuget\" />
     <Folder Include="syrup\scripts\" />
-    <Folder Include="tools\" />
-    <Folder Include="tools\ib\" />
+  
   </ItemGroup>
   <ItemGroup>
     <Compile Include=".build.ps1" />
     <Compile Include="bl.ps1" />
     <Compile Include="nuget\nuget.nuspec" />
-    <Compile Include="tools\ib\ib.cmd" />
-    <Compile Include="tools\ib\Invoke-Build-Help.xml" />
-    <Compile Include="tools\ib\Invoke-Build.ps1" />
-    <Compile Include="tools\ib\Invoke-Builds.ps1" />
-    <Compile Include="tools\ib\LICENSE.txt" />
-    <Compile Include="tools\ib\README.htm" />
-    <Compile Include="tools\ib\Release-Notes.htm" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="syrup\scripts\after-make-current.csx" />
