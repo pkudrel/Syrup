@@ -47,24 +47,21 @@ steps:
     #buildConfiguration: # Optional
     #publishRunAttachments: true # Optional
 
-- task: CopyFiles@2
-  inputs:
-    sourceFolder: '$(Build.SourcesDirectory)/_artifacts/zip' # Optional
-    contents: '**' 
-    targetFolder: '$(Build.ArtifactStagingDirectory)'
-    #cleanTargetFolder: false # Optional
-    #overWrite: false # Optional
-    #flattenFolders: false # Optional
 
 - task: CopyFiles@2
   inputs:
     sourceFolder: '$(Build.SourcesDirectory)/_artifacts/zip' # Optional
     contents: '**' 
-    targetFolder: '$(Build.BinariesDirectory)'
+    targetFolder: $(Build.ArtifactStagingDirectory)\artifacts
     #cleanTargetFolder: false # Optional
     #overWrite: false # Optional
     #flattenFolders: false # Optional
 
-
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: $(Build.ArtifactStagingDirectory)\artifacts
+    ArtifactName: artifacts
+    publishLocation: Container
+  
 
 
