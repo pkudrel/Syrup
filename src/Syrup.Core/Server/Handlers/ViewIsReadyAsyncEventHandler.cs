@@ -53,7 +53,7 @@ namespace Syrup.Core.Server.Handlers
 
             await _mediator.Publish(new LocalFileSystemWasSacanedEvent(res1));
             _logCtrl.Info($"Begin donload release info form: {_registry.ReleaseInfoUrl}");
-            await _releaseInfoService.FetchRelaseInfoAsync();
+            await _releaseInfoService.FetchReleaseInfoAsync();
             var res2 = _releaseInfoService.GetCurrentReleaseInfo();
             await _mediator.Publish(new ReleaseInfoWasFetchedEvent(res2));
             _logCtrl.Info($"Release info was fetched. The total number releases on server: {res2.Count}");

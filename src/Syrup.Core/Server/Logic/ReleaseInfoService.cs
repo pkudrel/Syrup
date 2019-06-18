@@ -10,7 +10,7 @@ namespace Syrup.Core.Server.Logic
     public interface IReleaseInfoService
     {
         Task<List<ReleaseInfo>> GetReleaseInfoAsync(string url);
-        Task FetchRelaseInfoAsync();
+        Task FetchReleaseInfoAsync();
         List<ReleaseInfo> GetCurrentReleaseInfo();
     }
 
@@ -37,7 +37,7 @@ namespace Syrup.Core.Server.Logic
         }
 
 
-        public async Task FetchRelaseInfoAsync()
+        public async Task FetchReleaseInfoAsync()
         {
             var t = await _fileDownloader.DownloadTextAsync(_registry.ReleaseInfoUrl);
             _relaseInfos = JsonConvert.DeserializeObject<List<ReleaseInfo>>(t);

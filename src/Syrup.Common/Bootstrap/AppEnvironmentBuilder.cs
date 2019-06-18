@@ -11,7 +11,7 @@ namespace Syrup.Common.Bootstrap
         private const string _GLOBAL_DIR = "global-dir";
         private const string _LOG_DIR = "log";
         private const string _VAR_DIR = "var";
-        private const string _DEV_DIR = ".dev";
+        private const string _DEV_DIR = "dev";
         private const string _GIT_DIR = ".git";
         private const string _APP_VS_DIR = ".app.vs";
         private const string _SYRUP_DIR = ".syrup";
@@ -73,7 +73,7 @@ namespace Syrup.Common.Bootstrap
             res.IsDeveloperMode = IsDeveloperMode(res.IsSyrup, res.DevDir, dv);
 
             // root
-            res.RootDir = GetRoot(res.ExeFileDir, res.SyrupDir, res.DevDir);
+            res.RootDir = GetRoot(res.ExeFileDir, res.SyrupDir, res.DevDir, dv);
 
             // important dev dirs
             res.GitDir = FindDir(res.RootDir, _GIT_DIR);
@@ -141,7 +141,7 @@ namespace Syrup.Common.Bootstrap
         }
 
 
-        private string GetRoot(string appDir, string syrupDir, string devDir)
+        private string GetRoot(string appDir, string syrupDir, string devDir, DeveloperConfig dv)
         {
             // syrup is present - use syrup
             if (!string.IsNullOrEmpty(syrupDir)) return new DirectoryInfo(syrupDir)?.Parent?.FullName;
@@ -149,7 +149,7 @@ namespace Syrup.Common.Bootstrap
 
             if (!string.IsNullOrEmpty(devDir))
             {
-                var vsAppDir = Path.Combine(devDir, _APP_VS_DIR);
+                var vsAppDir = Path.Combine(devDir, dv.DevSubdir);
                 if (Directory.Exists(vsAppDir)) return vsAppDir;
             }
 

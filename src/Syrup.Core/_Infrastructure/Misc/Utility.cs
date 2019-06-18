@@ -15,7 +15,7 @@ namespace Syrup.Core._Infrastructure.Misc
                 wp.Credentials = CredentialCache.DefaultCredentials;
                 ret.Proxy = wp;
             }
-            ret.Headers.Add(HttpRequestHeader.Authorization, "Bearer " + key);
+           // ret.Headers.Add(HttpRequestHeader.Authorization, "Bearer " + key);
             return ret;
         }
     }
