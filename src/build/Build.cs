@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -64,7 +64,7 @@ class Build : NukeBuild
     ProductInfo ProductInfo => new ProductInfo
     {
         Company = "Deneblab",
-        Copyright = $"Deneblab � {DateTime.UtcNow.Year}"
+        Copyright = $"Deneblab © {DateTime.UtcNow.Year}"
     };
 
     /// Projects

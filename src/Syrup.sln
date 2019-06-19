@@ -9,6 +9,7 @@ Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "buildOld", "buildOld\buildO
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{7E932C5D-B178-4EBC-8151-9E3809781F66}"
 	ProjectSection(SolutionItems) = preProject
+		..\azure-pipelines.yml = ..\azure-pipelines.yml
 		..\.config\build.json = ..\.config\build.json
 	EndProjectSection
 EndProject
