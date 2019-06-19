@@ -14,6 +14,7 @@ steps:
    
 
 
+
 - script: | 
     echo '$(System.DefaultWorkingDirectory)'
     echo '$(Build.ArtifactStagingDirectory)'
@@ -29,7 +30,7 @@ steps:
     echo '$(Build.ArtifactStagingDirectory)'
   displayName: 'Run a one-line script second'
 
-# Build number
+# Build number - ś
 # https://www.andrewhoefling.com/Blog/Post/azure-pipelines-custom-build-numbers-in-yaml-templates
 # https://www.patriksvensson.se/2019/03/build-counters-in-azure-devops
 

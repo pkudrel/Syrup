@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,7 +23,7 @@ using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
 [UnsetVisualStudioEnvironmentVariables]
 class Build : NukeBuild
 {
-    /// Support plugins are available for:
+    /// Support plugins are available for: ś
     /// - JetBrains ReSharper        https://nuke.build/resharper
     /// - JetBrains Rider            https://nuke.build/rider
     /// - Microsoft VisualStudio     https://nuke.build/visualstudio
