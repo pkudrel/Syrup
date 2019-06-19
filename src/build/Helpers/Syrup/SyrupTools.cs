@@ -26,7 +26,7 @@ namespace Helpers.Syrup
             var dst = Path.GetFullPath(path) + ".syrup";
             var json = JsonConvert.SerializeObject(r, Formatting.Indented);
             File.WriteAllText(dst, json, new UTF8Encoding(false));
-            Logger.Info($"Syrup; Make syrup for: {path}; Syrup file: {Path.GetFileName(dst)}");
+            Logger.Normal($"Syrup; Make syrup for: {path}; Syrup file: {Path.GetFileName(dst)}");
         }
 
         private static string GetsShaHashForFile(string path)

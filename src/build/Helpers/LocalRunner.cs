@@ -120,7 +120,7 @@ namespace Helpers
                             Logger.Trace(text);
                             break;
                         case LogLevel.Normal:
-                            Logger.Info(text);
+                            Logger.Normal(text);
                             break;
                         case LogLevel.Warning:
                             Logger.Warn(text);

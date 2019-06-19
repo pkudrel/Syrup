@@ -107,13 +107,13 @@ class Build : NukeBuild
         .Executes(() =>
         {
             var b = MagicVersion;
-            Logger.Info($"Host: '{Host}'");
-            Logger.Info($"Version: '{b.SemVersion}'");
-            Logger.Info($"Date: '{b.DateTime:s}Z'");
-            Logger.Info($"FullVersion: '{b.InformationalVersion}'");
-            Logger.Info($"env:TEAMCITY_VERSION: '{Environment.GetEnvironmentVariable("TEAMCITY_VERSION")}'");
-            Logger.Info($"env:Agent.Name: '{Environment.GetEnvironmentVariable("AGENT_NAME")}'");
-            Logger.Info(
+            Logger.Normal($"Host: '{Host}'");
+            Logger.Normal($"Version: '{b.SemVersion}'");
+            Logger.Normal($"Date: '{b.DateTime:s}Z'");
+            Logger.Normal($"FullVersion: '{b.InformationalVersion}'");
+            Logger.Normal($"env:TEAMCITY_VERSION: '{Environment.GetEnvironmentVariable("TEAMCITY_VERSION")}'");
+            Logger.Normal($"env:Agent.Name: '{Environment.GetEnvironmentVariable("AGENT_NAME")}'");
+            Logger.Normal(
                 $"env:Build.ArtifactStagingDirectory: '{Environment.GetEnvironmentVariable("BUILD_ARTIFACTSTAGINGDIRECTORY")}'");
         });
 
@@ -123,9 +123,9 @@ class Build : NukeBuild
         .OnlyWhenStatic(() => IsAzureDevOps)
         .Executes(() =>
         {
-            Logger.Info($"Set version to AzureDevOps: {MagicVersion.SemVersion}");
+            Logger.Normal($"Set version to AzureDevOps: {MagicVersion.SemVersion}");
             // https://github.com/microsoft/azure-pipelines-tasks/blob/master/docs/authoring/commands.md
-            Logger.Info($"##vso[build.updatebuildnumber]{MagicVersion.SemVersion}");
+            Logger.Normal($"##vso[build.updatebuildnumber]{MagicVersion.SemVersion}");
         });
 
     Target Configure => _ => _
@@ -272,11 +272,11 @@ class Build : NukeBuild
         var projectFile = p.Project.Path;
         var projectDir = Path.GetDirectoryName(projectFile);
         EnsureExistingDirectory(buildOut);
-        Logger.Info($"Build; Project file: {projectFile}");
-        Logger.Info($"Build; Project dir: {projectDir}");
-        Logger.Info($"Build; Out dir: {buildOut}");
-        Logger.Info($"Build; Target: {Configuration}");
-        Logger.Info($"Build; Target: {GitRepository.Branch}");
+        Logger.Normal($"Build; Project file: {projectFile}");
+        Logger.Normal($"Build; Project dir: {projectDir}");
+        Logger.Normal($"Build; Out dir: {buildOut}");
+        Logger.Normal($"Build; Target: {Configuration}");
+        Logger.Normal($"Build; Target: {GitRepository.Branch}");
 
         //AssemblyTools.Patch(projectDir, MagicVersion, p, ProductInfo);
 

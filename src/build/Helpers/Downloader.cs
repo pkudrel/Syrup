@@ -16,12 +16,12 @@ namespace Helpers
             var textLabel = string.IsNullOrEmpty(label) ? string.Empty : $"{label}; ";
             if (File.Exists(dst) == false)
             {
-                Logger.Info($"{textLabel}File do not exists; Downloading; Src: {src}; Dst: {dst}");
+                Logger.Normal($"{textLabel}File do not exists; Downloading; Src: {src}; Dst: {dst}");
                 HttpTasks.HttpDownloadFile(src, dst);
             }
             else
             {
-                Logger.Info($"{textLabel}File exists; Path: {dst}");
+                Logger.Normal($"{textLabel}File exists; Path: {dst}");
             }
 
         }
