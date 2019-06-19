@@ -46,6 +46,7 @@ stuff/*
 .local/*
 build/*
 _tmp/*
+.tmp/*
 _artifacts/*
 dev/*
 

@@ -7,7 +7,8 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>MyApplication</RootNamespace>
     <AssemblyName>MyApplication</AssemblyName>
-    <Name>build</Name>
+    <Name>buildOld</Name>
+    <ProjectHome />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,7 +31,6 @@
     <Folder Include="syrup\" />
     <Folder Include="nuget\" />
     <Folder Include="syrup\scripts\" />
-  
   </ItemGroup>
   <ItemGroup>
     <Compile Include=".build.ps1" />
