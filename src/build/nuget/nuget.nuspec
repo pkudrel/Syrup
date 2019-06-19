@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<package xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <id>Syrup</id>
+    <version>{Version}</version>
+    <authors>Piotr Kudrel</authors>
+    <owners>DenebLab</owners>
+    <licenseUrl>https://github.com/pkudrel/Syrup/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/pkudrel/Syrup</projectUrl>
+    <iconUrl>https://github.com/pkudrel/Syrup/raw/master/misc/gfx/logo/logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>SyrUP - Simple updater for window aplications </description>
+    <tags>application updater</tags>
+  </metadata>
+</package>
