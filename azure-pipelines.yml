@@ -1,7 +1,7 @@
 
 trigger:
-# - production 
-  - develop
+- production 
+#  - develop
 
 pool:
   name: Default
