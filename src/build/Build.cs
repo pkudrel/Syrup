@@ -201,6 +201,7 @@ class Build : NukeBuild
 
 
     Target CopyComponents => _ => _
+        .DependsOn(MakeSyrupSelf, MakeScriptExecutor)
         .Executes(() =>
 
         {
