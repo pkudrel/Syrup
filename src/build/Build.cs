@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using Helpers;
 using Helpers.MagicVersionService;
+using Helpers.Syrup;
 using Nuke.Common;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
@@ -75,31 +78,29 @@ class Build : NukeBuild
     {
         new ProjectDefinition
         {
-            Name = "Syrup",
-            Dir = "Syrup",
+            Name = SyrupProject.Name,
+            Dir = SyrupProject.Name,
             Exe = "Syrup.exe",
             DstExe = "Syrup.exe",
             Project = SyrupProject
         },
         new ProjectDefinition
         {
-            Name = "SyrupSelf",
-            Dir = "Syrup.Self",
+            Name = SelfProject.Name,
+            Dir = SelfProject.Name,
             Exe = "Syrup.Self.exe",
             DstExe = "Syrup.Self.exe",
             Project = SelfProject
         },
         new ProjectDefinition
         {
-            Name = "Syrup.ScriptExecutor",
-            Dir = "Syrup.ScriptExecutor",
+            Name = ScriptExecutorProject.Name,
+            Dir = ScriptExecutorProject.Name,
             Exe = "Syrup.ScriptExecutor.exe",
             DstExe = "Syrup.ScriptExecutor.exe",
             Project = ScriptExecutorProject
         }
     };
-
-
 
 
     Target Information => _ => _
@@ -163,61 +164,149 @@ class Build : NukeBuild
             }
         });
 
+    Target MakeComponents => _ => _
+        .DependsOn(MakeSyrupSelf, MakeScriptExecutor, CopyComponents);
 
-    Target Compile => _ => _
+
+    Target MakeSyrupSelf => _ => _
         .DependsOn(Restore)
         .Executes(() =>
 
         {
-            foreach (var p in Projects)
-            {
-                var buildOut = TmpBuild / CommonDir.Build / p.Dir;
-                var projectFile = p.Project.Path;
-                var projectDir = Path.GetDirectoryName(projectFile);
-                EnsureExistingDirectory(buildOut);
-                Logger.Info($"Build; Project file: {projectFile}");
-                Logger.Info($"Build; Project dir: {projectDir}");
-                Logger.Info($"Build; Out dir: {buildOut}");
-                Logger.Info($"Build; Target: {Configuration}");
-                Logger.Info($"Build; Target: {GitRepository.Branch}");
-
-                //AssemblyTools.Patch(projectDir, MagicVersion, p, ProductInfo);
-
-                MSBuild(s => s
-                    .SetProjectFile(projectFile)
-                    .SetOutDir(buildOut)
-                    .SetVerbosity(MSBuildVerbosity.Quiet)
-                    .SetConfiguration(Configuration)
-                    .SetTargetPlatform(MSBuildTargetPlatform.x64)
-                    .SetMaxCpuCount(Environment.ProcessorCount)
-                    .SetNodeReuse(IsLocalBuild));
-            }
+            var project = Projects.FirstOrDefault(x => x.Project == SelfProject);
+            BuildFn(project);
+            MargeFn(project);
         });
-    Target Marge => _ => _
-        .DependsOn(Compile)
+
+
+    Target MakeScriptExecutor => _ => _
+        .DependsOn(Restore)
         .Executes(() =>
 
         {
-            foreach (var p in Projects)
-            {
-                var buildOut = TmpBuild / CommonDir.Build / p.Dir;
-                var margeOut = TmpBuild / CommonDir.Merge / p.Dir;
+            var project = Projects.FirstOrDefault(x => x.Project == ScriptExecutorProject);
+            BuildFn(project);
+            MargeFn(project);
+        });
 
-                EnsureExistingDirectory(margeOut);
-                CopyDirectoryRecursively(buildOut, margeOut, DirectoryExistsPolicy.Merge);
+    Target MakeSyrup => _ => _
+        .DependsOn(MakeComponents)
+        .Executes(() =>
 
-                using (var process = ProcessTasks.StartProcess(
-                    LibzPath,
-                    $"inject-dll --assembly {p.Exe} --include *.dll --move",
-                    margeOut))
-                {
-                    process.AssertWaitForExit();
-                    ControlFlow.AssertWarn(process.ExitCode == 0,
-                        "Libz report generation process exited with some errors.");
-                }
-            }
+        {
+            var project = Projects.FirstOrDefault(x => x.Project == SyrupProject);
+            BuildFn(project);
+            MargeFn(project);
         });
 
 
-    public static int Main() => Execute<Build>(x => x.Marge);
+    Target CopyComponents => _ => _
+        .Executes(() =>
+
+        {
+            var embedDir = SyrupProject.Directory / "Embed";
+            var selfProjectExe = TmpBuild / CommonDir.Merge / SelfProject.Name / $"{SelfProject.Name}.exe";
+            var scriptExecutorProjectExe = TmpBuild / CommonDir.Merge / ScriptExecutorProject.Name /
+                                           $"{ScriptExecutorProject.Name}.exe";
+            ;
+            CopyFile(selfProjectExe, embedDir / "syrup-self.bin", FileExistsPolicy.Overwrite);
+            CopyFile(scriptExecutorProjectExe, embedDir / "syrup-executor.bin", FileExistsPolicy.Overwrite);
+        });
+
+
+    Target Nuget => _ => _
+       .DependsOn(MakeSyrup)
+       .Executes(() =>
+
+       {
+           var p = Projects.FirstOrDefault(x => x.Project == SyrupProject);
+
+           var tmpMerge = TmpBuild / CommonDir.Merge / p.Dir;
+           var tmpNuget = TmpBuild / CommonDir.Nuget / p.Dir;
+           var tmpMain = tmpNuget / "main" / p.Dir;
+           var tmpOthers = tmpNuget / "others";
+           var srcBuild = SourceDir / CommonDir.Build;
+           var tmpReady = TmpBuild / CommonDir.Ready;
+
+           EnsureExistingDirectory(tmpNuget);
+           EnsureExistingDirectory(tmpReady);
+
+
+
+           // main dir
+           EnsureExistingDirectory(tmpMain);
+           CopyFile(tmpMerge / "Syrup.exe", tmpMain / "Syrup.exe");
+           
+          
+
+
+           // nuget definition
+           var srcNugetFile = srcBuild / "nuget" / "nuget.nuspec";
+           var dstNugetFile = tmpNuget / "Syrup.nuspec";
+           //CopyFile(srcBuild / "nuget" / "nuget.nuspec", dstNugetFile);
+
+           var text = File.ReadAllText(srcNugetFile);
+           var r = text.Replace("{Version}", MagicVersion.NugetVersion);
+           File.WriteAllText(dstNugetFile, r, Encoding.UTF8);
+
+
+           using (var process = ProcessTasks.StartProcess(
+               NugetPath,
+               $"pack {dstNugetFile} -OutputDirectory {tmpReady} -NoPackageAnalysis",
+               tmpNuget))
+           {
+               process.AssertWaitForExit();
+               ControlFlow.AssertWarn(process.ExitCode == 0,
+                   "Nuget report generation process exited with some errors.");
+           }
+
+           var nugetFiles = GlobFiles(tmpReady, "*.nupkg");
+
+           foreach (var file in nugetFiles) SyrupTools.MakeSyrupFile(file, MagicVersion, p);
+       });
+
+    void BuildFn(ProjectDefinition p)
+    {
+        var buildOut = TmpBuild / CommonDir.Build / p.Dir;
+        var projectFile = p.Project.Path;
+        var projectDir = Path.GetDirectoryName(projectFile);
+        EnsureExistingDirectory(buildOut);
+        Logger.Info($"Build; Project file: {projectFile}");
+        Logger.Info($"Build; Project dir: {projectDir}");
+        Logger.Info($"Build; Out dir: {buildOut}");
+        Logger.Info($"Build; Target: {Configuration}");
+        Logger.Info($"Build; Target: {GitRepository.Branch}");
+
+        //AssemblyTools.Patch(projectDir, MagicVersion, p, ProductInfo);
+
+        MSBuild(s => s
+            .SetProjectFile(projectFile)
+            .SetOutDir(buildOut)
+            .SetVerbosity(MSBuildVerbosity.Quiet)
+            .SetConfiguration(Configuration)
+            .SetTargetPlatform(MSBuildTargetPlatform.x64)
+            .SetMaxCpuCount(Environment.ProcessorCount)
+            .SetNodeReuse(IsLocalBuild));
+    }
+
+    void MargeFn(ProjectDefinition p)
+    {
+        var buildOut = TmpBuild / CommonDir.Build / p.Dir;
+        var margeOut = TmpBuild / CommonDir.Merge / p.Dir;
+
+        EnsureExistingDirectory(margeOut);
+        CopyDirectoryRecursively(buildOut, margeOut, DirectoryExistsPolicy.Merge);
+
+        using (var process = ProcessTasks.StartProcess(
+            LibzPath,
+            $"inject-dll --assembly {p.Exe} --include *.dll --move",
+            margeOut))
+        {
+            process.AssertWaitForExit();
+            ControlFlow.AssertWarn(process.ExitCode == 0,
+                "Libz report generation process exited with some errors.");
+        }
+    }
+
+    public static int Main() => Execute<Build>(x => x.Nuget);
 }

@@ -69,10 +69,10 @@ namespace Syrup.ScriptExecutor
 
         private static void RunFromString()
         {
-            var requestJson = @"{""RootPath"":""C:\\work\\DenebLab\\Syrup\\.dev\\.app.vs"",
-                                ""AppPath"":""C:\\work\\DenebLab\\Syrup\\.dev\\.app.vs\\app\\LukeSearch.1.0.709"",
-                                ""AppName"":""LukeSearch.1.0.709"",
-                                ""ScriptPath"":""C:\\work\\DenebLab\\Syrup\\.dev\\.app.vs\\app\\LukeSearch.1.0.709\\_syrup\\scripts\\before-make-current.csx""}";
+            var requestJson = @"{""RootPath"":""C:\\work\\DenebLab\\Syrup\\dev\\app.vs"",
+                                ""AppPath"":""C:\\work\\DenebLab\\Syrup\\dev\\app.vs\\app\\LukeSearch.1.0.745"",
+                                ""AppName"":""LukeSearch.1.0.745"",
+                                ""ScriptPath"":""C:\\work\\DenebLab\\Syrup\\dev\\app.vs\\app\\LukeSearch.1.0.745\\_syrup\\scripts\\before-make-current.csx""}";
             var request = JsonConvert.DeserializeObject<ExecutorRequest>(requestJson);
             var runner = new ScriptRunner();
             var response = runner.Run(request);

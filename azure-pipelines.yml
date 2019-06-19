@@ -1,31 +1,16 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+
+trigger:
+# - production 
+  - develop
 
 pool:
-  name: private
+  name: Default
+
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    git fetch origin '+refs/heads/*:refs/heads/*'
-    git checkout $(Build.SourceBranchName)
-    git reset --hard $(Build.SourceBranchName)
-    git pull
-    git branch
-    
-  displayName: 'Set valid branch name'
-
-- task: PowerShell@2
-  displayName: 'Run main build script'
-  inputs:
-    targetType: 'filePath'
-    filePath: ./src/build/bl.ps1 
-    arguments: '-buildCounter $(Build.BuildId)'
-
+- checkout: self  # self represents the repo where the initial Pipelines YAML file was found
+  clean: true
+  persistCredentials: true
 
 
 - script: | 
@@ -34,34 +19,62 @@ steps:
     echo '$(Agent.BuildDirectory)'
     echo '$(Build.SourcesDirectory)'
     echo '$(Build.BinariesDirectory)'
-  displayName: 'Run a one-line script'
+    echo '$(Build.TriggeredBy.DefinitionName)'
+    echo '$(Build.Reason)'
+    echo '$(Build.SourceBranch)'
+    echo '$(Build.SourceBranchName)'
+    echo '$(Build.BuildId)'
+    echo '$(Build.BuildNumber)'
+    echo '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Run a one-line script second'
 
-- task: PublishTestResults@2
+# Build number
+# https://www.andrewhoefling.com/Blog/Post/azure-pipelines-custom-build-numbers-in-yaml-templates
+# https://www.patriksvensson.se/2019/03/build-counters-in-azure-devops
+
+
+- script: |
+    git fetch origin '+refs/heads/*:refs/heads/*'
+    git checkout --quiet $(Build.SourceBranchName)
+    git reset --hard $(Build.SourceBranchName)
+    git pull
+    git branch
+  displayName: 'Set valid branch name: $(Build.SourceBranchName)'
+
+
+#   git branch --set-upstream-to=$(Build.SourceBranch)
+
+# - script: | 
+#     git checkout -b $(Build.SourceBranchName)
+#   displayName: 'Run set local branch'
+
+- task: PowerShell@2
+  env:
+    azureStorageConnectionString: $(azureStorageConnectionString)
+
   inputs:
-    testResultsFormat: 'xUnit' # Options: JUnit, NUnit, VSTest, xUnit
-    testResultsFiles: '**/Syrup.Tests.xml' 
-    #searchFolder: './build/tmp/build/Syrup.Tests' # Optional
-    #mergeTestResults: false # Optional
-    #testRunTitle: # Optional
-    #buildPlatform: # Optional
-    #buildConfiguration: # Optional
-    #publishRunAttachments: true # Optional
+    targetType: 'filePath' # Optional. Options: filePath, inline
+    filePath: 'build.ps1'
+    arguments: --BuildCounter $(Build.BuildId)
+    failOnStderr: true
+    workingDirectory: $(Build.SourcesDirectory)
+
+# - task: PublishBuildArtifacts@1
+#   inputs:
+#     pathtoPublish: $(Build.ArtifactStagingDirectory)
+#     artifactName: MyBuildOutputs
 
 
-- task: CopyFiles@2
-  inputs:
-    sourceFolder: '$(Build.SourcesDirectory)/_artifacts/zip' # Optional
-    contents: '**' 
-    targetFolder: $(Build.ArtifactStagingDirectory)\artifacts
-    #cleanTargetFolder: false # Optional
-    #overWrite: false # Optional
-    #flattenFolders: false # Optional
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: $(Build.ArtifactStagingDirectory)\artifacts
-    ArtifactName: artifacts
-    publishLocation: Container
-  
+# IMPORTANT 
+# Install AzurePS https://docs.microsoft.com/en-us/powershell/azure/install-az-ps
+
+# - task: AzureFileCopy@3
+#   inputs:
+#     sourcePath: $(Build.ArtifactStagingDirectory)
+#     azureSubscription: 'antipiracy-eu-west-free-2' # 
+#     destination: azureBlob
+#     storage: 'antipiracytest'
+#     containerName: 'antipiracycontainer'
 
 

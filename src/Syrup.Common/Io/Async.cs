@@ -2,9 +2,8 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Syrup.Common.Io;
 
-namespace Robe.Core.Common.Io
+namespace Syrup.Common.Io
 {
     public class Async
     {
