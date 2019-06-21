@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Helpers;
+using Helpers.Azure;
 using Helpers.MagicVersionService;
 using Helpers.Syrup;
 using Nuke.Common;
@@ -18,12 +19,13 @@ using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
+using SyrupInfo = Helpers.Syrup.SyrupInfo;
 
 [CheckBuildProjectConfigurations]
 [UnsetVisualStudioEnvironmentVariables]
 class Build : NukeBuild
 {
-    /// Support plugins are available for: ś
+    /// Support plugins are available for:
     /// - JetBrains ReSharper        https://nuke.build/resharper
     /// - JetBrains Rider            https://nuke.build/rider
     /// - Microsoft VisualStudio     https://nuke.build/visualstudio
@@ -265,6 +267,56 @@ class Build : NukeBuild
 
            foreach (var file in nugetFiles) SyrupTools.MakeSyrupFile(file, MagicVersion, p);
        });
+    Target PublishAzureDevOps => _ => _
+        .DependsOn(Nuget)
+        .OnlyWhenStatic(() => IsAzureDevOps)
+        .Executes(() =>
+        {
+          
+            var tmpReady = TmpBuild / CommonDir.Ready;
+            var serverPublishArtifact = Environment.GetEnvironmentVariable("BUILD_ARTIFACTSTAGINGDIRECTORY");
+            CopyDirectoryRecursively(tmpReady, serverPublishArtifact);
+
+        });
+
+    Target PublishAzureDevOpsStorage => _ => _
+       .DependsOn(PublishAzureDevOps)
+       .OnlyWhenStatic(() => IsAzureDevOps)
+       .Executes(async () =>
+       {
+
+           void LogFiles(string title, List<Helpers.Azure.SyrupInfo> filesToShow)
+           {
+               Logger.Info($"{title}: {filesToShow.Count}");
+               foreach (var l in filesToShow)
+               {
+                   Logger.Info($"Name: {l.Name}; Date: {l.ReleaseDate}");
+               }
+           }
+
+           var storageConnectionString = Environment.GetEnvironmentVariable("azureStorageConnectionString");
+           Logger.Info($"Build; storageConnectionString: {storageConnectionString}");
+           var serverPublishArtifact = Environment.GetEnvironmentVariable("BUILD_ARTIFACTSTAGINGDIRECTORY");
+           var files = Directory.GetFiles(serverPublishArtifact).ToList();
+           var client = AzureSyrupTools.Create(storageConnectionString, "syrup");
+           await client.UploadFiles(files);
+           List<Helpers.Azure.SyrupInfo> list = await client.GetSyrupFiles();
+           var fileToRemove = list.OrderByDescending(x => x.ReleaseDate).Skip(15).ToList();
+           LogFiles("Files to remove", fileToRemove);
+           await client.RemoveSyrupFiles(fileToRemove);
+           var newList = await client.GetSyrupFiles();
+           await client.CreateSyrupFilesList(newList);
+           LogFiles("Files in container", newList);
+
+          
+
+
+
+        });
+
+
+    Target Publish => _ => _
+        .DependsOn(Nuget, PublishAzureDevOps, PublishAzureDevOpsStorage);
 
     void BuildFn(ProjectDefinition p)
     {
