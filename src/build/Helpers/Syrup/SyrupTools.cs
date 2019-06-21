@@ -2,6 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using Helpers.Azure;
 using Helpers.MagicVersionService;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -21,8 +22,7 @@ namespace Helpers.Syrup
             r.Sha = GetsShaHashForFile(path);
             r.SemVer = magicVersion.SemVersion;
             r.Channel = magicVersion.GitBranch;
-            r.RelaseDate = $"{magicVersion.DateTime:s}Z";
-            r.ReleaseDate = r.RelaseDate;
+            r.ReleaseDate = $"{magicVersion.DateTime:s}Z";
             var dst = Path.GetFullPath(path) + ".syrup";
             var json = JsonConvert.SerializeObject(r, Formatting.Indented);
             File.WriteAllText(dst, json, new UTF8Encoding(false));
