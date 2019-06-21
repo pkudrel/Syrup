@@ -217,100 +217,87 @@ class Build : NukeBuild
 
 
     Target Nuget => _ => _
-       .DependsOn(MakeSyrup)
-       .Executes(() =>
+        .DependsOn(MakeSyrup)
+        .Executes(() =>
 
-       {
-           var p = Projects.FirstOrDefault(x => x.Project == SyrupProject);
+        {
+            var p = Projects.FirstOrDefault(x => x.Project == SyrupProject);
 
-           var tmpMerge = TmpBuild / CommonDir.Merge / p.Dir;
-           var tmpNuget = TmpBuild / CommonDir.Nuget / p.Dir;
-           var tmpMain = tmpNuget / "main" / p.Dir;
-           var tmpOthers = tmpNuget / "others";
-           var srcBuild = SourceDir / CommonDir.Build;
-           var tmpReady = TmpBuild / CommonDir.Ready;
+            var tmpMerge = TmpBuild / CommonDir.Merge / p.Dir;
+            var tmpNuget = TmpBuild / CommonDir.Nuget / p.Dir;
+            var tmpMain = tmpNuget / "main" / p.Dir;
+            var tmpOthers = tmpNuget / "others";
+            var srcBuild = SourceDir / CommonDir.Build;
+            var tmpReady = TmpBuild / CommonDir.Ready;
 
-           EnsureExistingDirectory(tmpNuget);
-           EnsureExistingDirectory(tmpReady);
-
-
-
-           // main dir
-           EnsureExistingDirectory(tmpMain);
-           CopyFile(tmpMerge / "Syrup.exe", tmpMain / "Syrup.exe");
-           
-          
+            EnsureExistingDirectory(tmpNuget);
+            EnsureExistingDirectory(tmpReady);
 
 
-           // nuget definition
-           var srcNugetFile = srcBuild / "nuget" / "nuget.nuspec";
-           var dstNugetFile = tmpNuget / "Syrup.nuspec";
-           //CopyFile(srcBuild / "nuget" / "nuget.nuspec", dstNugetFile);
-
-           var text = File.ReadAllText(srcNugetFile);
-           var r = text.Replace("{Version}", MagicVersion.NugetVersion);
-           File.WriteAllText(dstNugetFile, r, Encoding.UTF8);
+            // main dir
+            EnsureExistingDirectory(tmpMain);
+            CopyFile(tmpMerge / "Syrup.exe", tmpMain / "Syrup.exe");
 
 
-           using (var process = ProcessTasks.StartProcess(
-               NugetPath,
-               $"pack {dstNugetFile} -OutputDirectory {tmpReady} -NoPackageAnalysis",
-               tmpNuget))
-           {
-               process.AssertWaitForExit();
-               ControlFlow.AssertWarn(process.ExitCode == 0,
-                   "Nuget report generation process exited with some errors.");
-           }
+            // nuget definition
+            var srcNugetFile = srcBuild / "nuget" / "nuget.nuspec";
+            var dstNugetFile = tmpNuget / "Syrup.nuspec";
+            //CopyFile(srcBuild / "nuget" / "nuget.nuspec", dstNugetFile);
 
-           var nugetFiles = GlobFiles(tmpReady, "*.nupkg");
+            var text = File.ReadAllText(srcNugetFile);
+            var r = text.Replace("{Version}", MagicVersion.NugetVersion);
+            File.WriteAllText(dstNugetFile, r, Encoding.UTF8);
 
-           foreach (var file in nugetFiles) SyrupTools.MakeSyrupFile(file, MagicVersion, p);
-       });
+
+            using (var process = ProcessTasks.StartProcess(
+                NugetPath,
+                $"pack {dstNugetFile} -OutputDirectory {tmpReady} -NoPackageAnalysis",
+                tmpNuget))
+            {
+                process.AssertWaitForExit();
+                ControlFlow.AssertWarn(process.ExitCode == 0,
+                    "Nuget report generation process exited with some errors.");
+            }
+
+            var nugetFiles = GlobFiles(tmpReady, "*.nupkg");
+
+            foreach (var file in nugetFiles) SyrupTools.MakeSyrupFile(file, MagicVersion, p);
+        });
+
     Target PublishAzureDevOps => _ => _
         .DependsOn(Nuget)
         .OnlyWhenStatic(() => IsAzureDevOps)
         .Executes(() =>
         {
-          
             var tmpReady = TmpBuild / CommonDir.Ready;
             var serverPublishArtifact = Environment.GetEnvironmentVariable("BUILD_ARTIFACTSTAGINGDIRECTORY");
             CopyDirectoryRecursively(tmpReady, serverPublishArtifact);
-
         });
 
     Target PublishAzureDevOpsStorage => _ => _
-       .DependsOn(PublishAzureDevOps)
-       .OnlyWhenStatic(() => IsAzureDevOps)
-       .Executes(async () =>
-       {
+        .DependsOn(PublishAzureDevOps)
+        .OnlyWhenStatic(() => IsAzureDevOps)
+        .Executes(async () =>
+        {
+            void LogFiles(string title, List<SyrupInfo> filesToShow)
+            {
+                Logger.Info($"{title}: {filesToShow.Count}");
+                foreach (var l in filesToShow) Logger.Info($"Name: {l.Name}; Date: {l.ReleaseDate}");
+            }
 
-           void LogFiles(string title, List<Helpers.Azure.SyrupInfo> filesToShow)
-           {
-               Logger.Info($"{title}: {filesToShow.Count}");
-               foreach (var l in filesToShow)
-               {
-                   Logger.Info($"Name: {l.Name}; Date: {l.ReleaseDate}");
-               }
-           }
-
-           var storageConnectionString = Environment.GetEnvironmentVariable("azureStorageConnectionString");
-           Logger.Info($"Build; storageConnectionString: {storageConnectionString}");
-           var serverPublishArtifact = Environment.GetEnvironmentVariable("BUILD_ARTIFACTSTAGINGDIRECTORY");
-           var files = Directory.GetFiles(serverPublishArtifact).ToList();
-           var client = AzureSyrupTools.Create(storageConnectionString, "syrup");
-           await client.UploadFiles(files);
-           List<Helpers.Azure.SyrupInfo> list = await client.GetSyrupFiles();
-           var fileToRemove = list.OrderByDescending(x => x.ReleaseDate).Skip(15).ToList();
-           LogFiles("Files to remove", fileToRemove);
-           await client.RemoveSyrupFiles(fileToRemove);
-           var newList = await client.GetSyrupFiles();
-           await client.CreateSyrupFilesList(newList);
-           LogFiles("Files in container", newList);
-
-          
-
-
-
+            var storageConnectionString = Environment.GetEnvironmentVariable("azureStorageConnectionString");
+            Logger.Info($"Build; storageConnectionString: {storageConnectionString}");
+            var serverPublishArtifact = Environment.GetEnvironmentVariable("BUILD_ARTIFACTSTAGINGDIRECTORY");
+            var files = Directory.GetFiles(serverPublishArtifact).ToList();
+            var client = AzureSyrupTools.Create(storageConnectionString, "syrup");
+            await client.UploadFiles(files);
+            var list = await client.GetSyrupFiles();
+            var fileToRemove = list.OrderByDescending(x => x.ReleaseDate).Skip(15).ToList();
+            LogFiles("Files to remove", fileToRemove);
+            await client.RemoveSyrupFiles(fileToRemove);
+            var newList = await client.GetSyrupFiles();
+            await client.CreateSyrupFilesList(newList);
+            LogFiles("Files in container", newList);
         });
 
 
@@ -360,5 +347,5 @@ class Build : NukeBuild
         }
     }
 
-    public static int Main() => Execute<Build>(x => x.Nuget);
+    public static int Main() => Execute<Build>(x => x.Publish);
 }
