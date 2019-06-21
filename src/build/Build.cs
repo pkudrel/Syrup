@@ -271,7 +271,7 @@ class Build : NukeBuild
         {
             var tmpReady = TmpBuild / CommonDir.Ready;
             var serverPublishArtifact = Environment.GetEnvironmentVariable("BUILD_ARTIFACTSTAGINGDIRECTORY");
-            CopyDirectoryRecursively(tmpReady, serverPublishArtifact);
+            CopyDirectoryRecursively(tmpReady, serverPublishArtifact, DirectoryExistsPolicy.Merge);
         });
 
     Target PublishAzureDevOpsStorage => _ => _
