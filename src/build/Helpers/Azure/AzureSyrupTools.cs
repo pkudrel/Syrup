@@ -82,6 +82,7 @@ namespace Helpers.Azure
             var cloudBlobClient = storageAccount.CreateCloudBlobClient();
             if (cloudBlobClient == null) throw new NullReferenceException("CloudBlobClient is null");
             var cloudBlobContainer = cloudBlobClient.GetContainerReference(containerName);
+            cloudBlobContainer.CreateIfNotExists();
             var instance = new AzureSyrupTools(cloudBlobContainer);
             return instance;
         }
