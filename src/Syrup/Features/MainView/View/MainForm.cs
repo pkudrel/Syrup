@@ -83,8 +83,14 @@ namespace Syrup.Features.MainView.View
         public void Execute(MakeUpdatePanelVisibleRequest makeUpdatePanelVisibleRequest)
         {
             // ReSharper disable once LocalizableElement
-            buttonMakeSyrupUpdate.Text = $"Update to: {makeUpdatePanelVisibleRequest.Version}";
-            buttonMakeSyrupUpdate.Visible = true;
+            
+            this.Invoke(x =>
+            {
+                buttonMakeSyrupUpdate.Text = $"Update to: {makeUpdatePanelVisibleRequest.Version}";
+                buttonMakeSyrupUpdate.Visible = true;
+
+
+            });
         }
 
         public void Execute(GetLocalReleaseListQueryResult result)

@@ -34,11 +34,11 @@ namespace Syrup.Core.Server.Handlers
 
         public async Task Handle(ViewIsReadyAsyncEvent notification, CancellationToken cancellationToken)
         {
-            await Task.Delay(800);
+            await Task.Delay(800, cancellationToken);
             await _mediator
                 .Publish(new LongProcessStartedEvent("Get releases infos ... ",
                     int.MinValue,
-                    LongProcessType.IsIndeterminate));
+                    LongProcessType.IsIndeterminate), cancellationToken);
 
             _logCtrl.Info($"Begin local file system scan");
 
@@ -51,15 +51,15 @@ namespace Syrup.Core.Server.Handlers
                 res1 = _fileManagerService.DeleteOldRelease(res1, Consts.MAX_NUMBER_LOCAL_RELEASES);
             }
 
-            await _mediator.Publish(new LocalFileSystemWasSacanedEvent(res1));
+            await _mediator.Publish(new LocalFileSystemWasSacanedEvent(res1), cancellationToken);
             _logCtrl.Info($"Begin donload release info form: {_registry.ReleaseInfoUrl}");
             await _releaseInfoService.FetchReleaseInfoAsync();
             var res2 = _releaseInfoService.GetCurrentReleaseInfo();
-            await _mediator.Publish(new ReleaseInfoWasFetchedEvent(res2));
+            await _mediator.Publish(new ReleaseInfoWasFetchedEvent(res2), cancellationToken);
             _logCtrl.Info($"Release info was fetched. The total number releases on server: {res2.Count}");
             await
                 _mediator.Publish(new LongProcessEndedEvent("Release info was fetched", int.MinValue,
-                    LongProcessType.IsIndeterminate));
+                    LongProcessType.IsIndeterminate), cancellationToken);
         }
     }
 }
